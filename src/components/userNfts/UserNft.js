@@ -11,7 +11,7 @@ import {
   SimpleGrid,
   Select,
 } from "@chakra-ui/react";
-import { useMoralisWeb3Api, useMoralisWeb3ApiCall } from "react-moralis";
+import { useMoralisCloudFunction } from "react-moralis";
 import { useState } from "react";
 
 export default function UserNft({
@@ -21,16 +21,15 @@ export default function UserNft({
 }) {
   const [ownerAddress, setOwnerAddress] = useState(defaultOwnerAddress);
   const [chainId, setChainId] = useState("eth");
-  const Web3Api = useMoralisWeb3Api();
 
-  const { fetch, data, isLoading } = useMoralisWeb3ApiCall(
-    Web3Api.account.getNFTs,
+  const { data, isLoading, fetch } = useMoralisCloudFunction(
+    "getNftUsers",
     {
-      chain: chainId,
-      format: "decimal",
-      token_addresses: [contractAddress],
-      address: ownerAddress,
-    }
+      chainId: chainId,
+      tokenAddresses: contractAddress,
+      ownerAddress: ownerAddress,
+    },
+    { autoFetch: false } // If you dont want to be fecth manually with a button, you can remove this line and the fetch will be auto with a useEffect
   );
 
   return (
